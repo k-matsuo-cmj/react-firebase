@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
@@ -7,6 +9,15 @@ const SignUp = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log(email, password);
+
+    // ユーザー登録処理
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        console.log(userCredential.user);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   const handleChangeEmail = (event) => {
     setEmail(event.currentTarget.value);
