@@ -10,7 +10,9 @@ import {
   doc,
   getDoc,
   getDocs,
+  limit,
   onSnapshot,
+  orderBy,
   query,
   serverTimestamp,
   updateDoc,
@@ -28,10 +30,13 @@ const Home = () => {
   const [users, setUsers] = useState([]);
   useEffect(() => {
     const usersCollectionRef = collection(db, "users");
-    // getDocs(usersCollectionRef).then((querySnapshot) => {
-    //   setUsers(querySnapshot.docs.map((doc) => doc.data()));
-    // });
-    const unsub = onSnapshot(usersCollectionRef, (querySnap) => {
+    const q = query(
+      usersCollectionRef,
+      // where("admin", "==", false),
+      orderBy("name", "desc")
+      // limit(2)
+    );
+    const unsub = onSnapshot(q, (querySnap) => {
       setUsers(querySnap.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     });
     return unsub;
