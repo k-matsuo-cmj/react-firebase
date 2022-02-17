@@ -4,11 +4,13 @@ import { auth, db } from "../firebase";
 import { useAuthContext } from "../context/AuthContext";
 import { useState, useEffect } from "react";
 import {
+  addDoc,
   collection,
   doc,
   getDoc,
   getDocs,
   onSnapshot,
+  serverTimestamp,
 } from "firebase/firestore";
 
 const Home = () => {
@@ -40,6 +42,21 @@ const Home = () => {
       }
     });
   };
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const { name, email } = event.target.elements;
+    console.log(name.value, email.value);
+    // 登録処理
+    const usersCollectionRef = collection(db, "users");
+    const documentRef = await addDoc(usersCollectionRef, {
+      name: name.value,
+      email: email.value,
+      timestamp: serverTimestamp(),
+    });
+    getDoc(documentRef).then((docSnap) =>
+      console.log(documentRef.id, docSnap.data())
+    );
+  };
 
   if (!user) {
     return <Navigate to="/login" />;
@@ -55,6 +72,20 @@ const Home = () => {
           {users.map((user) => (
             <div key={user.id}>{user.name}</div>
           ))}
+          <hr></hr>
+          <form onSubmit={handleSubmit}>
+            <div>
+              <label>名前</label>
+              <input type="text" name="name" placeholder="名前" />
+            </div>
+            <div>
+              <label>メールアドレス</label>
+              <input type="email" name="email" placeholder="メールアドレス" />
+            </div>
+            <div>
+              <button>登録</button>
+            </div>
+          </form>
         </div>
       </div>
     );

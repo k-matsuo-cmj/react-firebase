@@ -2,5 +2,6 @@
     "emmet.includeLanguages": {
         "javascript": "javascriptreact"
     },
-    "editor.tabSize": 2
+    "editor.tabSize": 2,
+    "workbench.colorTheme": "React Theme"
 }
