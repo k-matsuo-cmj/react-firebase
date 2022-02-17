@@ -13,6 +13,7 @@ import {
   onSnapshot,
   query,
   serverTimestamp,
+  updateDoc,
   where,
 } from "firebase/firestore";
 
@@ -73,6 +74,10 @@ const Home = () => {
       await deleteDoc(userDocumentRef);
     });
   };
+  const changeAdmin = async (id, checked) => {
+    const userDocumentRef = doc(db, "users", id);
+    await updateDoc(userDocumentRef, { admin: checked });
+  };
 
   if (!user) {
     return <Navigate to="/login" />;
@@ -95,6 +100,12 @@ const Home = () => {
               >
                 削除
               </button>
+              <input
+                type="checkbox"
+                name="admin"
+                onChange={(event) => changeAdmin(user.id, event.target.checked)}
+                checked={user.admin}
+              />
             </div>
           ))}
           <hr></hr>
