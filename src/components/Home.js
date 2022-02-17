@@ -11,7 +11,9 @@ import {
   getDoc,
   getDocs,
   onSnapshot,
+  query,
   serverTimestamp,
+  where,
 } from "firebase/firestore";
 
 const Home = () => {
@@ -62,6 +64,15 @@ const Home = () => {
     const userDocumentRef = doc(db, "users", id);
     await deleteDoc(userDocumentRef);
   };
+  const deleteUserByName = async (name) => {
+    const userCollectionRef = collection(db, "users");
+    const q = query(userCollectionRef, where("name", "==", name));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach(async (document) => {
+      const userDocumentRef = doc(db, "users", document.id);
+      await deleteDoc(userDocumentRef);
+    });
+  };
 
   if (!user) {
     return <Navigate to="/login" />;
@@ -78,6 +89,12 @@ const Home = () => {
             <div key={user.id}>
               <span>{user.name} </span>
               <button onClick={() => deleteUser(user.id)}>削除</button>
+              <button
+                onClick={() => deleteUserByName(user.name)}
+                style={{ color: "red" }}
+              >
+                削除
+              </button>
             </div>
           ))}
           <hr></hr>
